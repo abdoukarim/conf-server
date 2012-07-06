@@ -1,0 +1,82 @@
+# See /usr/share/postfix/main.cf.dist for a commented, more complete version
+
+
+# Debian specific:  Specifying a file name will cause the first
+# line of that file to be used as the name.  The Debian default
+# is /etc/mailname.
+#myorigin = /etc/mailname
+myorigin = $mydomain
+
+smtpd_banner = $myhostname ESMTP $mail_name (Ubuntu)
+biff = no
+
+# appending .domain is the MUA's job.
+append_dot_mydomain = no
+
+# Uncomment the next line to generate "delayed mail" warnings
+#delay_warning_time = 4h
+
+readme_directory = no
+# TLS parameters
+smtpd_tls_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
+smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
+smtpd_use_tls=yes
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+
+# See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
+# information on enabling SSL in the smtp client.
+
+myhostname = ns.xxx.com ################################A REMPLACER
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+myorigin = /etc/mailname
+mydestination = ns.xxx.com, localhost.xxx.com, , localhost #####################A REMPLACER
+relayhost = 
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all
+
+relay_domains = mailinglist.xxx.com #######################################A REMPLACER
+relay_recipient_maps = hash:/var/lib/mailman/data/virtual-mailman
+mailman_destination_recipient_limit = 1
+transport_maps = hash:/etc/postfix/transport
+
+############Securisation de POSTFIX
+
+
+# Règles pour accepter ou refuser une connexion :
+# - on attend une seconde (pour piéger les zombies) ;
+# - on interdit la parallélisation là où il n'est pas sensé y en avoir.
+smtpd_client_restrictions =
+    permit_mynetworks, permit_sasl_authenticated,
+    sleep 1, reject_unauth_pipelining
+# Règles pour accepter ou refuser un message, dès lors qu'on connaît le nom
+# de l'hôte de l'expéditeur (par sa commande HELO ou EHLO) :
+# - on refuse les noms d'hôte invalides.
+smtpd_helo_restrictions = reject_invalid_helo_hostname
+# Règles pour accepter ou refuser un message, dès lors qu'on connaît l'adresse
+# de l'expéditeur :
+# - s'il vient d'un expéditeur inexistant de notre domaine, on le rejette ;
+# - si le domaine de l'expéditeur n'a pas d'IP ou de MX, on le refuse ;
+# - s'il vient d'un client sûr ou d'un client authentifié, on l'accepte ;
+# - si l'adresse de l'expéditeur n'est pas sous forme canonique, on le refuse.
+smtpd_sender_restrictions =
+    reject_unlisted_sender, reject_unknown_sender_domain,
+    permit_mynetworks, permit_sasl_authenticated,
+    reject_non_fqdn_sender
+# Règles pour accepter ou refuser un message, dès lors qu'on connaît le
+# destinataire (par la commande RCPT TO) :
+# - s'il est destiné à un expéditeur forgé chez nous, on le rejette ;
+# - s'il est destiné à un domaine forgé, on le rejette ;
+# - s'il vient d'un hôte sûr ou d'un client authentifié, on l'accepte ;
+# - si l'adresse de destination n'est pas sous forme canonique, on le refuse ;
+# - finalement, s'il n'est pas destiné à un domaine que l'on gère ou pour
+#   lequel on relaie, on le refuse.
+smtpd_recipient_restrictions =
+    reject_unlisted_recipient, reject_unknown_recipient_domain,
+    permit_mynetworks, permit_sasl_authenticated,
+    reject_non_fqdn_recipient,
+    reject_unauth_destination
+
