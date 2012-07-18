@@ -1,0 +1,30 @@
+#!/usr/bin/php
+ 
+<?php
+$dest = array('admin@example.com'); ################################ A MODIFIER
+$archives = '/var/archives';
+ 
+$host = trim(file_get_contents('/etc/hostname'));
+clearstatcache();
+$dir = opendir($archives);
+ 
+if($dir) {
+        while(false !== ($filename = readdir($dir))) {
+                if($filename[0]!='.' && preg_match('/'.date('Ymd').'/',$filename)) {
+                        $thefile = $archives.'/'.$filename;
+                        $size = exec("ls -l '".$thefile."' | awk '{print $5}'");
+                        if($size > 0) {
+                                $pagetext.= $filename." (".round($size/1000000000,2)." Go)\n";
+                        } else {
+                                $pagetext.= $filename." (? Go)\n";
+                        }
+                        $totalsize += $size;
+                }
+        }
+        $pagetext .= "\nTotal : ".round($totalsize/1000000000,2)." Go\n";
+}
+ 
+foreach($dest as $d) {
+        mail($d,'['.$host.'] Backup OK',$pagetext);
+}
+?>
