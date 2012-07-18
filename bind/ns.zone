@@ -1,0 +1,49 @@
+; ns.com
+$TTL    3600
+@	IN	SOA	hostnameXXX.example.com. root.ns.com. (
+			2012042308 ; SERIAL
+			3600; REFRESH
+			15M; RETRY
+			1W; EXPIRE
+			600 ) ; Negative Cache TTL
+;
+; NAMESERVERS
+;
+ns.com. IN       NS       hostnameXXX.example.com.   ; don't forget the final dot !
+ns.com. IN       NS       dns2.example.com. ; don't forget the final dot !
+;
+; Nodes in domain
+;
+www       IN A         xx.xx.xx.xx
+;mail      IN A         xx.xx.xx.xx
+mail	IN CNAME	ghs.google.com.
+mailinglist      IN A         xx.xx.xx.xx
+ns1       IN A         xx.xx.xx.xx
+;smtp      IN A         xx.xx.xx.xx
+;pop       IN A         xx.xx.xx.xx
+;ftp       IN A         xx.xx.xx.xx
+;imap      IN A         xx.xx.xx.xx
+ns.com.	IN	A	xx.xx.xx.xx
+;ns.com.	IN	MX	10 mail.ns.com.
+;
+;	GOOGLE APPS
+;
+ns.com.       IN      MX	1 aspmx.l.google.com.
+ns.com.	IN	MX	5 alt1.aspmx.l.google.com.
+ns.com.	IN	MX	5 alt2.aspmx.l.google.com.
+ns.com.	IN	MX	10 aspmx2.googlemail.com.
+ns.com.	IN	MX	10 aspmx3.googlemail.com.
+ns.com.	IN	MX	10 aspmx4.googlemail.com.
+ns.com.        IN      MX      10 aspmx5.googlemail.com.
+;mailinglist.ns.com.        IN      MX      10 mail.ns.com.
+mailinglist.ns.com.        IN      A       xx.xx.xx.xx
+; subdomains
+;
+*.ns.com. IN A xx.xx.xx.xx
+;
+; SPF
+;
+;ns.com. SPF "v=spf1 a:mail.ns.com ~all"
+;ns.com. TXT "v=spf1 a:mail.ns.com ~all"
+ns.com.	IN	TXT	"google-site-verification=CODE_DE_GOOGLE" ##################### A RENSEIGNER
+

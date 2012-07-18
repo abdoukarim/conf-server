@@ -1,0 +1,29 @@
+; ns.com
+$TTL    3600
+@	IN	SOA	hostnameXXX.example.com. root.ns.com. (
+			2012042306 ; SERIAL
+			3600; REFRESH
+			15M; RETRY
+			1W; EXPIRE
+			600 ) ; Negative Cache TTL
+;
+; NAMESERVERS
+;
+skyminds.net. IN       NS       hostnameXXX.example.com.   ; don't forget the final dot !
+skyminds.net. IN       NS       ns.kimsufi.com. ; don't forget the final dot !
+;
+; Nodes in domain
+;
+www       IN A         xx.xx.xx.xx
+mail      IN A         xx.xx.xx.xx
+ns1       IN A         xx.xx.xx.xx
+smtp      IN A         xx.xx.xx.xx
+pop       IN A         xx.xx.xx.xx
+ftp       IN A         xx.xx.xx.xx
+imap      IN A         xx.xx.xx.xx
+skyminds.net.	IN	A	xx.xx.xx.xx
+skyminds.net.	IN	MX	10 mail.skyminds.net.
+;
+; subdomains
+;
+*.skyminds.net. IN A xx.xx.xx.xx
